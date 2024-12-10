@@ -1,0 +1,31 @@
+# Build Stage
+FROM golang:1.22.2-alpine AS builder
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy module files and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the application source code
+COPY . .
+
+# Build the method service binary
+RUN go build -o method-svc ./cmd
+
+# Runtime Stage
+FROM alpine:3.18
+
+# Set the working directory for the runtime container
+WORKDIR /app
+
+# Copy the binary and environment file from the builder stage
+COPY --from=builder /app/method-svc .
+COPY --from=builder /app/.env ./
+
+# Expose the application port for communication
+EXPOSE 8081
+
+# Run the binary
+CMD ["./method-svc"]

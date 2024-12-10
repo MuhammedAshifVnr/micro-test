@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package user;
+
+option go_package ="./";
+
+service UserService {
+    rpc GetAllUsers (EmptyRequest) returns (UserListResponse);
+    rpc CreateUser (CreateReq) returns (CommonRes);
+    rpc GetUserByID (GetUserReq) returns (User);
+    rpc UpdateUser (UpdateReq) returns (CommonRes);
+    rpc DeleteUser (DeleteReq) returns (CommonRes);
+}
+
+message DeleteReq {
+    int64 id=1;
+}
+
+message UpdateReq {
+    uint64 id = 1;
+    string name = 2;
+    string email=3;
+}
+
+message GetUserReq{
+    int64 id=1;
+}
+
+message CreateReq{
+    string name =1;
+    string email =2;
+}
+
+message CommonRes{
+    string message=1;
+}
+
+message EmptyRequest {}
+
+message User {
+    uint64 id = 1;
+    string name = 2;
+}
+
+message UserListResponse {
+    repeated User users = 1;
+}
